@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { QRCodeSVG } from 'qrcode.react'
 import orderService from '@/services/order.service.js'
+import QrCodeTools from '@/components/entradas/qr-code-tools.jsx'
 
 export default function MisEntradas() {
   const qc = useQueryClient()
@@ -62,7 +62,12 @@ export default function MisEntradas() {
           const anulado = ticket.status === 'CANCELLED'
           return (
             <div key={ticket.id} className="card" style={{ padding: 20, textAlign: 'center', opacity: anulado ? 0.55 : 1 }}>
-              <QRCodeSVG value={ticket.qrCode} size={130} style={{ margin: '0 auto 12px' }} />
+              <QrCodeTools
+                value={ticket.qrCode}
+                filename={`ticketflow-${ticket.id.slice(0, 8)}`}
+                label={`QR de entrada ${ticket.id.slice(0, 8).toUpperCase()}`}
+                size={130}
+              />
               <div className="eyebrow" style={{ marginBottom: 4 }}>
                 {ticket.id.slice(0, 8).toUpperCase()}
               </div>

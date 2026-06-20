@@ -49,7 +49,7 @@ export default function EventoForm() {
       esEdicion ? eventosService.editarEvento(id, data) : eventosService.crearEvento(data),
     onSuccess: () => {
       toast.success(esEdicion ? 'Evento actualizado' : 'Evento creado')
-      navigate(RUTAS.ORG_MIS_EVENTOS)
+      navigate(user?.roleName === 'ADMIN' ? RUTAS.ADMIN_EVENTOS : RUTAS.ORG_MIS_EVENTOS)
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo guardar el evento'),
   })
@@ -83,7 +83,7 @@ export default function EventoForm() {
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             required
-            maxLength={200}
+            maxLength={150}
           />
         </div>
 
@@ -95,6 +95,7 @@ export default function EventoForm() {
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             rows={4}
+            required
           />
         </div>
 

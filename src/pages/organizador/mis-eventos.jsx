@@ -13,7 +13,7 @@ export default function OrgMisEventos() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['org-mis-eventos', pagina],
-    queryFn: () => eventosService.getEventos({ page: pagina, size: 10, sort: 'dateTime,desc' }),
+    queryFn: () => eventosService.getMisEventos({ page: pagina, size: 10, sort: 'dateTime,desc' }),
   })
 
   const deleteMut = useMutation({

@@ -1,7 +1,7 @@
 import { useLocation, Link } from 'react-router-dom'
-import { QRCodeSVG } from 'qrcode.react'
 import { RUTAS } from '@/constants/rutas.js'
 import { formatPrecio } from '@/utils/format-price.js'
+import QrCodeTools from '@/components/entradas/qr-code-tools.jsx'
 
 export default function CompraConfirmacion() {
   const { state } = useLocation()
@@ -33,7 +33,12 @@ export default function CompraConfirmacion() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16, maxWidth: 840 }}>
         {tickets.map((ticket) => (
           <div key={ticket.id} className="card" style={{ padding: 20, textAlign: 'center' }}>
-            <QRCodeSVG value={ticket.qrCode} size={140} style={{ margin: '0 auto 12px' }} />
+            <QrCodeTools
+              value={ticket.qrCode}
+              filename={`ticketflow-${ticket.id.slice(0, 8)}`}
+              label={`QR de entrada ${ticket.id.slice(0, 8).toUpperCase()}`}
+              size={140}
+            />
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-text-muted)', letterSpacing: '0.06em' }}>
               {ticket.id.slice(0, 8).toUpperCase()}
             </div>

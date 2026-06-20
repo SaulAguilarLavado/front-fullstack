@@ -13,6 +13,10 @@ const eventosService = {
   getEventoById: (id) =>
     http.get(`/events/${id}`).then((r) => r.data.data),
 
+  // Solo ORGANIZER: devuelve eventos cuyo organizer es el usuario autenticado.
+  getMisEventos: (params = {}) =>
+    http.get('/events/my', { params }).then((r) => r.data.data),
+
   // EventRequest: { title, description, dateTime, imageUrl, venueId }
   // dateTime debe ser ISO string futuro (@Future en el backend).
   crearEvento: (data) =>

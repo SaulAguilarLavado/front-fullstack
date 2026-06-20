@@ -1,11 +1,22 @@
-import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Link, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import useAuthStore from '@/store/auth.store.js'
 import { RUTAS } from '@/constants/rutas.js'
+import { ROLES } from '@/constants/roles.js'
 
 export default function LayoutCliente() {
   const { user, logout } = useAuthStore()
   const navigate = useNavigate()
+  const isAdmin = user?.roleName === ROLES.ADMIN
+  const isOrganizador = user?.roleName === ROLES.ORGANIZADOR
+
+  if (isAdmin) {
+    return <Navigate to={RUTAS.ADMIN_DASHBOARD} replace />
+  }
+
+  if (isOrganizador) {
+    return <Navigate to={RUTAS.ORG_DASHBOARD} replace />
+  }
 
   const handleLogout = () => {
     logout()

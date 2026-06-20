@@ -10,8 +10,9 @@ import { RUTAS } from '@/constants/rutas.js'
 
 export default function Compra() {
   const navigate = useNavigate()
-  const { items, total, toOrderRequest, limpiarCarrito } = useCarritoStore()
+  const { items, toOrderRequest, limpiarCarrito } = useCarritoStore()
   const [metodoPago, setMetodoPago] = useState('CARD')
+  const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0)
 
   const checkoutMut = useMutation({
     mutationFn: () => {

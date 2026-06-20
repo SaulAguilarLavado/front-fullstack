@@ -2,10 +2,13 @@ import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import useAuthStore from '@/store/auth.store.js'
 import { RUTAS } from '@/constants/rutas.js'
+import { ROLES } from '@/constants/roles.js'
 
 export default function LayoutPublic() {
-  const { user, token, logout, isAdmin, isOrganizador } = useAuthStore()
+  const { user, token, logout } = useAuthStore()
   const navigate = useNavigate()
+  const isAdmin = user?.roleName === ROLES.ADMIN
+  const isOrganizador = user?.roleName === ROLES.ORGANIZADOR
 
   const handleLogout = () => {
     logout()

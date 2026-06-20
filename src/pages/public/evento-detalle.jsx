@@ -64,13 +64,12 @@ export default function EventoDetalle() {
     categorias.forEach((cat) => {
       const qty = cantidades[cat.id] ?? 0
       if (qty > 0) {
-        agregarItem({
+        agregarItem(Number(id), evento?.title, {
           ticketTypeId: cat.id,
           nombre: cat.name,
           precio: cat.price,
           cantidad: qty,
-          eventoId: Number(id),
-          eventoNombre: evento?.title,
+          maxPorPersona: disponible(cat),
         })
       }
     })

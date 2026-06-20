@@ -18,7 +18,7 @@ export default function OrgCategorias() {
 
   const { data: eventos = [] } = useQuery({
     queryKey: ['org-eventos-select'],
-    queryFn: () => eventosService.getEventos({ size: 100 }).then((r) => r.content ?? []),
+    queryFn: () => eventosService.getMisEventos({ size: 100 }).then((r) => r.content ?? []),
   })
 
   const { data: categorias = [], isLoading } = useQuery({

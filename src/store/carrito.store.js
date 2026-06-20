@@ -5,13 +5,8 @@ const useCarritoStore = create((set, get) => ({
   eventoNombre: '',
   items: [],        // [{ ticketTypeId, nombre, precio, cantidad, maxPorPersona }]
 
-  // derivados
-  get total() {
-    return get().items.reduce((sum, i) => sum + i.precio * i.cantidad, 0)
-  },
-  get cantidadTotal() {
-    return get().items.reduce((sum, i) => sum + i.cantidad, 0)
-  },
+  getTotal: () => get().items.reduce((sum, i) => sum + i.precio * i.cantidad, 0),
+  getCantidadTotal: () => get().items.reduce((sum, i) => sum + i.cantidad, 0),
 
   // retorna true si el item se agregó, false si hay conflicto de evento
   agregarItem: (eventoId, eventoNombre, item) => {
@@ -23,15 +18,14 @@ const useCarritoStore = create((set, get) => ({
     }
 
     const existente = state.items.find((i) => i.ticketTypeId === item.ticketTypeId)
+    const cantidad = item.cantidad ?? 1
+    const maxPorPersona = item.maxPorPersona ?? Number.MAX_SAFE_INTEGER
 
     if (existente) {
-      // validar máximo por persona
-      if (existente.cantidad >= item.maxPorPersona) return true
-
       set((s) => ({
         items: s.items.map((i) =>
           i.ticketTypeId === item.ticketTypeId
-            ? { ...i, cantidad: i.cantidad + 1 }
+            ? { ...i, cantidad: Math.min(i.cantidad + cantidad, maxPorPersona) }
             : i
         ),
       }))
@@ -39,7 +33,7 @@ const useCarritoStore = create((set, get) => ({
       set((s) => ({
         eventoId,
         eventoNombre,
-        items: [...s.items, { ...item, cantidad: 1 }],
+        items: [...s.items, { ...item, cantidad: Math.min(cantidad, maxPorPersona), maxPorPersona }],
       }))
     }
 

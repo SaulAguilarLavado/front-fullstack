@@ -11,7 +11,7 @@ export default function OrgDashboard() {
 
   const { data } = useQuery({
     queryKey: ['org-eventos'],
-    queryFn: () => eventosService.getEventos({ size: 5, sort: 'dateTime,asc' }),
+    queryFn: () => eventosService.getMisEventos({ size: 5, sort: 'dateTime,asc' }),
   })
 
   const eventos = data?.content ?? []

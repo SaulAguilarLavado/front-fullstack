@@ -2,10 +2,13 @@ import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import useAuthStore from '@/store/auth.store.js'
 import { RUTAS } from '@/constants/rutas.js'
+import { ROLES } from '@/constants/roles.js'
 
 export default function LayoutAdmin() {
-  const { user, logout, isAdmin } = useAuthStore()
+  const { user, logout } = useAuthStore()
   const navigate = useNavigate()
+  const isAdmin = user?.roleName === ROLES.ADMIN
+  const dashboardRuta = isAdmin ? RUTAS.ADMIN_DASHBOARD : RUTAS.ORG_DASHBOARD
 
   const handleLogout = () => {
     logout()
@@ -24,7 +27,9 @@ export default function LayoutAdmin() {
           <Link to={RUTAS.HOME} className="navbar-brand">TicketFlow</Link>
           <div className="navbar-actions">
             <div className="navbar-avatar">{iniciales}</div>
-            <span style={{ fontSize: 14 }}>{user?.fullName ?? user?.email}</span>
+            <Link to={dashboardRuta} style={{ fontSize: 14, color: 'var(--color-text)' }}>
+              {user?.fullName ?? user?.email}
+            </Link>
             <span className="badge badge-neutral" style={{ marginLeft: 4 }}>
               {isAdmin ? 'Admin' : 'Organizador'}
             </span>

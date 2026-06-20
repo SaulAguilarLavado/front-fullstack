@@ -14,6 +14,14 @@ const orderService = {
   checkout: (paymentMethod, items) =>
     http.post('/orders/checkout', { paymentMethod, items }).then((r) => r.data.data),
 
+  // ADMIN: todas las órdenes del sistema.
+  getTodas: () =>
+    http.get('/orders').then((r) => r.data.data),
+
+  // ORGANIZER: órdenes relacionadas a eventos del organizador autenticado.
+  getVentasOrganizador: () =>
+    http.get('/orders/organizer-sales').then((r) => r.data.data),
+
   // Lista plana de OrderResponse, ordenada por fecha de pago descendente.
   getHistorial: () =>
     http.get('/orders/history').then((r) => r.data.data),
