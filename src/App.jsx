@@ -1,122 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useEffect, useState } from 'react'
+import AppRoutes from '@/routes/index.jsx'
+import useAuthStore from '@/store/auth.store.js'
+import usuariosService from '@/services/usuarios.service.js'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const { token, setAuth, logout } = useAuthStore()
+  const [isValidating, setIsValidating] = useState(!!token)
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+  // Al montar: si hay token en storage, valida que siga siendo correcto
+  // pidiendo el perfil propio. No existe GET /api/auth/me en el
+  // backend — se usa GET /api/users/me, que identifica al usuario por
+  // el JWT del header (no por id en la URL, así cualquier rol puede
+  // llamarlo sobre sí mismo sin necesitar permisos de admin).
+  useEffect(() => {
+    if (!token) {
+      console.log('🔓 Sin token en storage, renderizando App directamente')
+      setIsValidating(false)
+      return
+    }
 
-      <div className="ticks"></div>
+    console.log('🔐 Token encontrado, validando con backend...')
+    usuariosService.getMyProfile()
+      .then((userResponse) => {
+        console.log('✅ Token válido, perfil cargado:', userResponse)
+        setAuth(userResponse, token)
+        setIsValidating(false)
+      })
+      .catch((err) => {
+        console.log('❌ Token inválido o error en validación:', err?.message)
+        logout()
+        setIsValidating(false)
+      })
+  }, []) // solo al montar
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  // Mientras se valida el token, espera sin mostrar nada
+  if (isValidating) {
+    return null
+  }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  return <AppRoutes />
 }
-
-export default App
