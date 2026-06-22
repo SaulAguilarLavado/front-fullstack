@@ -1,6 +1,4 @@
-// El backend retorna el rol como string plano: "CLIENT", "ORGANIZER", "ADMIN"
-// (LoginResponse.role y UserResponse.roleName). Sin prefijo "ROLE_" —
-// ese prefijo solo existe internamente en Spring Security (AppUserDetails).
+
 export const ROLES = {
   CLIENTE: 'CLIENT',
   ORGANIZADOR: 'ORGANIZER',
