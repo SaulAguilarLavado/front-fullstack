@@ -1,18 +1,16 @@
 import { create } from 'zustand'
 
 const useCarritoStore = create((set, get) => ({
-  eventoId: null,   // solo puede haber items de UN evento a la vez
+  eventoId: null,
   eventoNombre: '',
-  items: [],        // [{ ticketTypeId, nombre, precio, cantidad, maxPorPersona }]
+  items: [], 
 
   getTotal: () => get().items.reduce((sum, i) => sum + i.precio * i.cantidad, 0),
   getCantidadTotal: () => get().items.reduce((sum, i) => sum + i.cantidad, 0),
 
-  // retorna true si el item se agregó, false si hay conflicto de evento
   agregarItem: (eventoId, eventoNombre, item) => {
     const state = get()
 
-    // conflicto: hay items de otro evento
     if (state.eventoId && state.eventoId !== eventoId) {
       return false
     }
@@ -59,10 +57,6 @@ const useCarritoStore = create((set, get) => ({
 
   limpiarCarrito: () => set({ eventoId: null, eventoNombre: '', items: [] }),
 
-  // OrderRequest real del backend: { paymentMethod, items: [{ ticketTypeId,
-  // quantity }] }. NO se manda totalAmount — el backend lo calcula con el
-  // precio real de cada TicketType en el momento del checkout, así nadie
-  // puede manipular el total interceptando la petición.
   toOrderRequest: (paymentMethod) => ({
     paymentMethod,
     items: get().items.map((i) => ({
