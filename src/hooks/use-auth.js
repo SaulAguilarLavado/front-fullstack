@@ -14,22 +14,14 @@ export default function useAuth() {
   const location = useLocation()
   const { setAuth, logout: clearAuth, user } = useAuthStore()
 
-  // Flujo real de 2 pasos porque LoginResponse solo trae
-  // { token, userId, role } — sin nombre ni email.
   const login = async (email, password) => {
     setIsLoading(true)
     setError(null)
     try {
       const { token, userId, role } = await authService.login({ email, password })
 
-      // Paso 1: guarda lo mínimo para que las siguientes llamadas autenticadas
-      // ya lleven el token en el header (http.js lo lee del storage).
       setAuth({ id: userId, roleName: role }, token)
 
-      // Paso 2: trae el perfil propio (fullName, email, etc.) usando
-      // /users/me — identificado por el JWT, no por id en la URL.
-      // getUsuarioById(id) ahora es exclusivo de ADMIN en el backend,
-      // así que un cliente recién logueado no podría usarlo sobre sí mismo.
       const userResponse = await usuariosService.getMyProfile()
       setAuth(userResponse, token)
 
@@ -55,11 +47,6 @@ export default function useAuth() {
     }
   }
 
-  // El registro público SIEMPRE crea cuentas de tipo cliente — el
-  // backend lo fuerza internamente con roleRepository.findByName("CLIENT")
-  // dentro de AuthService.register(). RegisterRequest ya ni siquiera
-  // tiene un campo roleId, así que el front no necesita (ni puede)
-  // mandar nada relacionado al rol.
   const register = async ({ email, password }) => {
     setIsLoading(true)
     setError(null)
