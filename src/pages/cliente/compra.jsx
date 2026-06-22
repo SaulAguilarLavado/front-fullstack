@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import orderService from '@/services/order.service.js'
 import useCarritoStore from '@/store/carrito.store.js'
@@ -10,9 +10,16 @@ import { RUTAS } from '@/constants/rutas.js'
 
 export default function Compra() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { items, toOrderRequest, limpiarCarrito } = useCarritoStore()
   const [metodoPago, setMetodoPago] = useState('CARD')
   const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0)
+
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate(RUTAS.EVENTOS, { replace: true })
+    }
+  }, [items.length, navigate])
 
   const checkoutMut = useMutation({
     mutationFn: () => {
@@ -20,14 +27,14 @@ export default function Compra() {
       return orderService.checkout(req.paymentMethod, req.items)
     },
     onSuccess: (orden) => {
-      limpiarCarrito()
-      navigate(RUTAS.COMPRA_CONFIRMACION, { state: { orden } })
+      queryClient.invalidateQueries({ queryKey: ['historial'] })
+      navigate(RUTAS.COMPRA_CONFIRMACION, { state: { orden }, replace: true })
+      queueMicrotask(limpiarCarrito)
     },
     onError: (e) => toast.error(e.message ?? 'Error al procesar el pago'),
   })
 
   if (items.length === 0) {
-    navigate(RUTAS.EVENTOS, { replace: true })
     return null
   }
 
