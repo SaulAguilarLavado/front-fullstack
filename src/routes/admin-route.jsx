@@ -9,8 +9,9 @@ export default function AdminRoute() {
   const token = useAuthStore((s) => s.token)
 
   if (!token) return <Navigate to={RUTAS.LOGIN} replace />
+  if (!user) return null
 
-  if (user?.roleName !== ROLES.ADMIN) {
+  if (user.roleName !== ROLES.ADMIN) {
     toast.error('Acceso restringido a administradores.')
     return <Navigate to={RUTAS.HOME} replace />
   }

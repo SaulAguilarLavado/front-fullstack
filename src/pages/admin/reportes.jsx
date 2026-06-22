@@ -4,14 +4,13 @@ import {
   Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
 import reportService from '@/services/report.service.js'
-import { formatPrecio } from '@/utils/format-price.js'
 
 const COLORES = ['#0f6e56', '#854f0b', '#5f5e5a', '#a32d2d', '#1d9e75']
 
 export default function AdminReportes() {
-  const { data: ventasPorMes = [], isLoading: loadingVentas } = useQuery({
-    queryKey: ['reporte-ventas-mes'],
-    queryFn: reportService.getVentasPorMes,
+  const { data: clientesPorMes = [], isLoading: loadingClientes } = useQuery({
+    queryKey: ['reporte-clientes-mes'],
+    queryFn: reportService.getClientesPorMes,
   })
 
   const { data: entradasPorCategoria = [], isLoading: loadingEntradas } = useQuery({
@@ -34,34 +33,31 @@ export default function AdminReportes() {
       <div className="page-header">
         <div>
           <h1>Reportes</h1>
-          <p>Métricas de ventas a lo largo del tiempo</p>
+          <p>Métricas por proceso de negocio</p>
         </div>
       </div>
 
-      {/* Ventas por mes */}
+      {/* Clientes registrados por mes */}
       <div className="card" style={{ padding: 24, marginBottom: 24 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Ventas por mes</h3>
+        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Clientes registrados por mes</h3>
         <p style={{ fontSize: 13, color: 'var(--color-text-muted)', marginBottom: 20 }}>
-          Monto total recaudado, agrupado por mes
+          Cantidad de clientes registrados, agrupados por mes
         </p>
-        {loadingVentas ? (
+        {loadingClientes ? (
           <p style={{ color: 'var(--color-text-muted)', fontSize: 14 }}>Cargando…</p>
-        ) : ventasPorMes.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)', fontSize: 14 }}>Sin datos de ventas todavía.</p>
+        ) : clientesPorMes.length === 0 ? (
+          <p style={{ color: 'var(--color-text-muted)', fontSize: 14 }}>Sin registros de clientes todavía.</p>
         ) : (
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={ventasPorMes}>
+            <LineChart data={clientesPorMes}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
               <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} />
-              <YAxis tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} />
-              <Tooltip
-                formatter={(value) => formatPrecio(value)}
-                contentStyle={{ fontSize: 13, borderRadius: 8, border: '1px solid var(--color-border)' }}
-              />
+              <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: 'var(--color-text-muted)' }} />
+              <Tooltip contentStyle={{ fontSize: 13, borderRadius: 8, border: '1px solid var(--color-border)' }} />
               <Line
                 type="monotone"
-                dataKey="totalSales"
-                name="Ventas"
+                dataKey="totalClients"
+                name="Clientes"
                 stroke="#0f6e56"
                 strokeWidth={2}
                 dot={{ r: 4 }}

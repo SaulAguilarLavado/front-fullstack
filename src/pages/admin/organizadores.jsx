@@ -29,7 +29,7 @@ export default function AdminOrganizadores() {
     mutationFn: (data) => usuariosService.crearUsuario(data),
     onSuccess: () => {
       toast.success('Organizador creado')
-      qc.invalidateQueries(['admin-usuarios-todos'])
+      qc.invalidateQueries({ queryKey: ['admin-usuarios-todos'] })
       setForm(FORM_VACIO)
       setMostrarForm(false)
     },
@@ -40,7 +40,16 @@ export default function AdminOrganizadores() {
     mutationFn: (id) => usuariosService.desactivarUsuario(id),
     onSuccess: () => {
       toast.success('Cuenta desactivada')
-      qc.invalidateQueries(['admin-usuarios-todos'])
+      qc.invalidateQueries({ queryKey: ['admin-usuarios-todos'] })
+    },
+    onError: (e) => toast.error(e.message),
+  })
+
+  const activateMut = useMutation({
+    mutationFn: (id) => usuariosService.activarUsuario(id),
+    onSuccess: () => {
+      toast.success('Cuenta activada')
+      qc.invalidateQueries({ queryKey: ['admin-usuarios-todos'] })
     },
     onError: (e) => toast.error(e.message),
   })
@@ -109,12 +118,21 @@ export default function AdminOrganizadores() {
                     </span>
                   </td>
                   <td className="table-actions">
-                    {o.isActive && (
+                    {o.isActive ? (
                       <button
                         className="btn btn-danger btn-sm"
+                        disabled={deactivateMut.isPending}
                         onClick={() => { if (confirm(`¿Desactivar a ${o.email}?`)) deactivateMut.mutate(o.id) }}
                       >
                         Desactivar
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-primary btn-sm"
+                        disabled={activateMut.isPending}
+                        onClick={() => { if (confirm(`¿Activar a ${o.email}?`)) activateMut.mutate(o.id) }}
+                      >
+                        Activar
                       </button>
                     )}
                   </td>

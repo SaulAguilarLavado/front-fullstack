@@ -9,6 +9,7 @@ import http from './http.js'
 //   PUT    /users/:id      (solo ADMIN, UserUpdateRequest CON roleId)
 //   PATCH  /users/:id/password
 //   PATCH  /users/:id/deactivate (solo ADMIN)
+//   PATCH  /users/:id/activate (solo ADMIN)
 const usuariosService = {
   getUsuarios: (params = {}) =>
     http.get('/users', { params }).then((r) => r.data.data),
@@ -46,6 +47,9 @@ const usuariosService = {
   // desactiva.
   desactivarUsuario: (id) =>
     http.patch(`/users/${id}/deactivate`).then((r) => r.data.data),
+
+  activarUsuario: (id) =>
+    http.patch(`/users/${id}/activate`).then((r) => r.data.data),
 }
 
 export default usuariosService
