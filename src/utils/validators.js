@@ -9,9 +9,5 @@ export const passwordFuerte = (pw) => {
   return { valido: errores.length === 0, errores }
 }
 
-// teléfono peruano: 9 dígitos, empieza en 9
-export const telefonoValido = (tel) =>
-  /^9\d{8}$/.test(tel.replace(/\s/g, ''))
-
 export const requerido = (valor) =>
   valor !== null && valor !== undefined && String(valor).trim() !== ''
