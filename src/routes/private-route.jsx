@@ -7,7 +7,7 @@ export default function PrivateRoute() {
   const location = useLocation()
 
   if (!token) {
-    // guarda la ruta a la que iba para redirigir después del login
+    // guarda la ruta a la que iba para redirigir
     return <Navigate to={RUTAS.LOGIN} state={{ from: location }} replace />
   }
 
