@@ -9,12 +9,13 @@ export default function OrganizerRoute() {
   const token = useAuthStore((s) => s.token)
 
   if (!token) return <Navigate to={RUTAS.LOGIN} replace />
+  if (!user) return null
 
-  if (user?.roleName === ROLES.ADMIN) {
+  if (user.roleName === ROLES.ADMIN) {
     return <Navigate to={RUTAS.ADMIN_DASHBOARD} replace />
   }
 
-  const tieneAcceso = user?.roleName === ROLES.ORGANIZADOR
+  const tieneAcceso = user.roleName === ROLES.ORGANIZADOR
 
   if (!tieneAcceso) {
     toast.error('No tienes permisos para acceder a esta sección.')

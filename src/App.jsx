@@ -5,39 +5,37 @@ import usuariosService from '@/services/usuarios.service.js'
 import './App.css'
 
 export default function App() {
-  const { token, setAuth, logout } = useAuthStore()
-  const [isValidating, setIsValidating] = useState(!!token)
+  const token = useAuthStore((s) => s.token)
+  const setAuth = useAuthStore((s) => s.setAuth)
+  const logout = useAuthStore((s) => s.logout)
+  const [isValidating, setIsValidating] = useState(false)
 
-  // Al montar: si hay token en storage, valida que siga siendo correcto
-  // pidiendo el perfil propio. No existe GET /api/auth/me en el
-  // backend — se usa GET /api/users/me, que identifica al usuario por
-  // el JWT del header (no por id en la URL, así cualquier rol puede
-  // llamarlo sobre sí mismo sin necesitar permisos de admin).
   useEffect(() => {
     if (!token) {
-      console.log('🔓 Sin token en storage, renderizando App directamente')
       setIsValidating(false)
       return
     }
 
-    console.log('🔐 Token encontrado, validando con backend...')
+    let active = true
+    setIsValidating(true)
+
     usuariosService.getMyProfile()
       .then((userResponse) => {
-        console.log('✅ Token válido, perfil cargado:', userResponse)
-        setAuth(userResponse, token)
-        setIsValidating(false)
+        if (active) setAuth(userResponse, token)
       })
       .catch((err) => {
-        console.log('❌ Token inválido o error en validación:', err?.message)
-        logout()
-        setIsValidating(false)
+        if (active && err?.response?.status === 401) logout()
       })
-  }, []) // solo al montar
+      .finally(() => {
+        if (active) setIsValidating(false)
+      })
 
-  // Mientras se valida el token, espera sin mostrar nada
-  if (isValidating) {
-    return null
-  }
+    return () => {
+      active = false
+    }
+  }, [token, setAuth, logout])
+
+  if (isValidating) return null
 
   return <AppRoutes />
 }

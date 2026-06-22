@@ -1,39 +1,72 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import { ROLES } from '@/constants/roles.js'
 
-// user guarda el UserResponse completo del backend una vez que se hidrata:
-// { id, email, fullName, roleId, roleName, isActive, createdAt, updatedAt }
-//
-// El flujo de login NO entrega esto directo. AuthService.login() solo
-// retorna LoginResponse { token, userId, role }. Por eso setAuth() se
-// llama dos veces en use-auth.js: primero con los datos mínimos del
-// login, luego se reemplaza con el UserResponse completo de
-// GET /api/users/me (identificado por el JWT, no por id en la URL).
-const useAuthStore = create(
-  persist(
-    (set, get) => ({
-      user: null,
-      token: null,
+const AUTH_STORAGE_KEY = 'auth-storage'
 
-      get isAuth() { return !!get().token },
-      get rol() { return get().user?.roleName ?? null },
-      get isAdmin() { return get().user?.roleName === ROLES.ADMIN },
-      get isOrganizador() { return get().user?.roleName === ROLES.ORGANIZADOR },
-      get isCliente() { return get().user?.roleName === ROLES.CLIENTE },
+function readStoredAuth() {
+  if (typeof window === 'undefined') return { user: null, token: null }
 
-      setAuth: (userData, token) => set({ user: userData, token }),
+  try {
+    const raw = window.localStorage.getItem(AUTH_STORAGE_KEY)
+    if (!raw) return { user: null, token: null }
 
-      updateUser: (data) =>
-        set((s) => ({ user: s.user ? { ...s.user, ...data } : null })),
-
-      logout: () => set({ user: null, token: null }),
-    }),
-    {
-      name: 'auth-storage',
-      partialize: (s) => ({ user: s.user, token: s.token }),
+    const parsed = JSON.parse(raw)
+    return {
+      user: parsed?.state?.user ?? null,
+      token: parsed?.state?.token ?? null,
     }
+  } catch {
+    window.localStorage.removeItem(AUTH_STORAGE_KEY)
+    return { user: null, token: null }
+  }
+}
+
+function writeStoredAuth(user, token) {
+  if (typeof window === 'undefined') return
+
+  window.localStorage.setItem(
+    AUTH_STORAGE_KEY,
+    JSON.stringify({
+      state: { user, token },
+      version: 0,
+    })
   )
-)
+}
+
+function clearStoredAuth() {
+  if (typeof window === 'undefined') return
+  window.localStorage.removeItem(AUTH_STORAGE_KEY)
+}
+
+const initialAuth = readStoredAuth()
+
+const useAuthStore = create((set, get) => ({
+  user: initialAuth.user,
+  token: initialAuth.token,
+
+  get isAuth() { return !!get().token },
+  get rol() { return get().user?.roleName ?? null },
+  get isAdmin() { return get().user?.roleName === ROLES.ADMIN },
+  get isOrganizador() { return get().user?.roleName === ROLES.ORGANIZADOR },
+  get isCliente() { return get().user?.roleName === ROLES.CLIENTE },
+
+  setAuth: (userData, token) => {
+    writeStoredAuth(userData, token)
+    set({ user: userData, token })
+  },
+
+  updateUser: (data) => {
+    set((s) => {
+      const user = s.user ? { ...s.user, ...data } : null
+      writeStoredAuth(user, s.token)
+      return { user }
+    })
+  },
+
+  logout: () => {
+    clearStoredAuth()
+    set({ user: null, token: null })
+  },
+}))
 
 export default useAuthStore
