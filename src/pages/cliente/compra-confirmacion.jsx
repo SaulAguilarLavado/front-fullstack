@@ -16,8 +16,6 @@ export default function CompraConfirmacion() {
     )
   }
 
-  // OrderResponse real: { id, total, generatedTickets: [{ id, qrCode,
-  // status, ticketTypeName, createdAt }] } — campo "total", no "totalAmount".
   const tickets = orden.generatedTickets ?? []
 
   return (
