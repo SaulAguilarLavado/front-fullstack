@@ -7,7 +7,7 @@ import { ROLE_LABELS } from '@/constants/roles.js'
 
 export default function AdminUsuarios() {
   const qc = useQueryClient()
-  const [pagina, setPagina] = useState(0)
+  const [pagina] = useState(0)
   const [editandoRolId, setEditandoRolId] = useState(null)
 
   const { data, isLoading } = useQuery({
@@ -24,7 +24,7 @@ export default function AdminUsuarios() {
     mutationFn: ({ id, data }) => usuariosService.actualizarUsuario(id, data),
     onSuccess: () => {
       toast.success('Usuario actualizado')
-      qc.invalidateQueries(['admin-usuarios'])
+      qc.invalidateQueries({ queryKey: ['admin-usuarios'] })
       setEditandoRolId(null)
     },
     onError: (e) => toast.error(e.message),
@@ -34,7 +34,16 @@ export default function AdminUsuarios() {
     mutationFn: (id) => usuariosService.desactivarUsuario(id),
     onSuccess: () => {
       toast.success('Usuario desactivado')
-      qc.invalidateQueries(['admin-usuarios'])
+      qc.invalidateQueries({ queryKey: ['admin-usuarios'] })
+    },
+    onError: (e) => toast.error(e.message),
+  })
+
+  const activateMut = useMutation({
+    mutationFn: (id) => usuariosService.activarUsuario(id),
+    onSuccess: () => {
+      toast.success('Usuario activado')
+      qc.invalidateQueries({ queryKey: ['admin-usuarios'] })
     },
     onError: (e) => toast.error(e.message),
   })
@@ -81,9 +90,11 @@ export default function AdminUsuarios() {
                     ) : (
                       <span
                         className="badge badge-neutral"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setEditandoRolId(u.id)}
-                        title="Click para cambiar rol"
+                        style={{ cursor: u.isActive ? 'pointer' : 'default' }}
+                        onClick={() => {
+                          if (u.isActive) setEditandoRolId(u.id)
+                        }}
+                        title={u.isActive ? 'Click para cambiar rol' : 'Activa el usuario para cambiar su rol'}
                       >
                         {ROLE_LABELS[u.roleName] ?? u.roleName}
                       </span>
@@ -95,14 +106,25 @@ export default function AdminUsuarios() {
                     </span>
                   </td>
                   <td className="table-actions">
-                    {u.isActive && (
+                    {u.isActive ? (
                       <button
                         className="btn btn-danger btn-sm"
+                        disabled={deactivateMut.isPending}
                         onClick={() => {
                           if (confirm(`¿Desactivar a ${u.email}?`)) deactivateMut.mutate(u.id)
                         }}
                       >
                         Desactivar
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-primary btn-sm"
+                        disabled={activateMut.isPending}
+                        onClick={() => {
+                          if (confirm(`¿Activar a ${u.email}?`)) activateMut.mutate(u.id)
+                        }}
+                      >
+                        Activar
                       </button>
                     )}
                   </td>
