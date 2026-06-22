@@ -19,9 +19,6 @@ export default function MisEntradas() {
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo anular'),
   })
-
-  // Extraer todos los tickets de todas las órdenes. Cada ticket trae
-  // status (VALID | CANCELLED) y ticketTypeName directo desde el backend.
   const tickets = historial.flatMap((orden) =>
     (orden.generatedTickets ?? []).map((t) => ({ ...t, orden }))
   )
