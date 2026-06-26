@@ -1,7 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import orderService from '@/services/order.service.js'
+import useMetricsUpdates from '@/hooks/use-metrics-updates.js'
 import { formatFecha, formatHora } from '@/utils/format-date.js'
 import { formatPrecio } from '@/utils/format-price.js'
+
+const LIVE_OPTS = { staleTime: 0, refetchInterval: 15000, refetchOnWindowFocus: true }
 
 const resumenOrden = (orden) => {
   const tickets = orden.generatedTickets ?? []
@@ -16,9 +19,12 @@ const resumenOrden = (orden) => {
 }
 
 export default function AdminVentas() {
+  useMetricsUpdates()
+
   const { data: ordenes = [], isLoading } = useQuery({
     queryKey: ['admin-ventas'],
     queryFn: orderService.getTodas,
+    ...LIVE_OPTS,
   })
 
   const totalVendido = ordenes.reduce((sum, orden) => sum + Number(orden.total ?? 0), 0)

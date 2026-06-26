@@ -47,6 +47,7 @@ export default function LayoutAdmin() {
               <span className="sidebar-section">Gestión</span>
               <NavLink to={RUTAS.ADMIN_EVENTOS} className="sidebar-link">🎪 Eventos</NavLink>
               <NavLink to={RUTAS.ADMIN_VENUES} className="sidebar-link">📍 Venues</NavLink>
+              <NavLink to={RUTAS.ADMIN_CATEGORIAS} className="sidebar-link">🏷 Categorías</NavLink>
               <NavLink to={RUTAS.ADMIN_USUARIOS} className="sidebar-link">👥 Usuarios</NavLink>
               <NavLink to={RUTAS.ADMIN_ORGANIZADORES} className="sidebar-link">🏢 Organizadores</NavLink>
               <NavLink to={RUTAS.ADMIN_ROLES} className="sidebar-link">🔑 Roles</NavLink>
@@ -60,7 +61,7 @@ export default function LayoutAdmin() {
               <NavLink to={RUTAS.ORG_DASHBOARD} className="sidebar-link">📊 Dashboard</NavLink>
               <span className="sidebar-section">Mis eventos</span>
               <NavLink to={RUTAS.ORG_MIS_EVENTOS} className="sidebar-link">🎪 Mis eventos</NavLink>
-              <NavLink to={RUTAS.ORG_CATEGORIAS} className="sidebar-link">🏷 Categorías</NavLink>
+              <NavLink to={RUTAS.ORG_CATEGORIAS} className="sidebar-link">🎟 Tipos de entrada</NavLink>
               <NavLink to={RUTAS.ORG_VENTAS} className="sidebar-link">💳 Mis ventas</NavLink>
             </>
           )}

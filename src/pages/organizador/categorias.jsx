@@ -71,8 +71,8 @@ export default function OrgCategorias() {
     <div>
       <div className="page-header">
         <div>
-          <h1>Categorías de precio</h1>
-          <p>Define las entradas disponibles para cada evento (VIP, General, etc.)</p>
+          <h1>Tipos de entrada</h1>
+          <p>Define los niveles de precio disponibles para cada evento (VIP, General, etc.)</p>
         </div>
       </div>
 

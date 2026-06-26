@@ -30,6 +30,7 @@ export default function EventoDetalle() {
     queryKey: ['ticket-types', id],
     queryFn: () => ticketTypeService.getByEvento(Number(id)),
     enabled: !!id,
+    refetchInterval: 15000,   // red de seguridad: refresca el stock por si el WS cae
   })
 
   // WebSocket: actualiza disponibilidad en tiempo real cuando alguien compra
@@ -118,6 +119,9 @@ export default function EventoDetalle() {
               <span className={`badge ${cancelado ? 'badge-danger' : evento.status === 'CONCLUDED' ? 'badge-neutral' : 'badge-success'}`}>
                 {ESTADOS_EVENTO[evento.status] ?? evento.status}
               </span>
+            )}
+            {evento.categoryName && (
+              <span className="badge badge-neutral">{evento.categoryName}</span>
             )}
           </div>
 

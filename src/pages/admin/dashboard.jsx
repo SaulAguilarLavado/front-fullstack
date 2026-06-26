@@ -2,17 +2,24 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import eventosService from '@/services/eventos.service.js'
 import usuariosService from '@/services/usuarios.service.js'
+import useMetricsUpdates from '@/hooks/use-metrics-updates.js'
 import { RUTAS } from '@/constants/rutas.js'
 
+const LIVE_OPTS = { staleTime: 0, refetchInterval: 15000, refetchOnWindowFocus: true }
+
 export default function AdminDashboard() {
+  useMetricsUpdates()
+
   const { data: eventosData } = useQuery({
     queryKey: ['admin-eventos-resumen'],
     queryFn: () => eventosService.getEventos({ size: 1 }),
+    ...LIVE_OPTS,
   })
 
   const { data: usuariosData } = useQuery({
     queryKey: ['admin-usuarios-resumen'],
     queryFn: () => usuariosService.getUsuarios({ size: 1 }),
+    ...LIVE_OPTS,
   })
 
   return (

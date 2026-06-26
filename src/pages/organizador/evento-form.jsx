@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import eventosService from '@/services/eventos.service.js'
 import venueService from '@/services/venue.service.js'
+import categoryService from '@/services/category.service.js'
 import useAuthStore from '@/store/auth.store.js'
 import { RUTAS } from '@/constants/rutas.js'
 
@@ -19,11 +20,17 @@ export default function EventoForm() {
     dateTime: '',
     imageUrl: '',
     venueId: '',
+    categoryId: '',
   })
 
   const { data: venues = [] } = useQuery({
     queryKey: ['venues-select'],
     queryFn: () => venueService.getVenues({ size: 100 }).then((r) => r.content ?? r),
+  })
+
+  const { data: categorias = [] } = useQuery({
+    queryKey: ['categorias'],
+    queryFn: categoryService.getAll,
   })
 
   const { data: eventoActual } = useQuery({
@@ -40,6 +47,7 @@ export default function EventoForm() {
         dateTime: eventoActual.dateTime?.slice(0, 16) ?? '',
         imageUrl: eventoActual.imageUrl ?? '',
         venueId: eventoActual.venue?.id ?? '',
+        categoryId: eventoActual.categoryId ?? '',
       })
     }
   }, [eventoActual])
@@ -62,6 +70,7 @@ export default function EventoForm() {
       dateTime: form.dateTime, // datetime-local ya viene en formato ISO sin zona
       imageUrl: form.imageUrl || null,
       venueId: Number(form.venueId),
+      categoryId: Number(form.categoryId),
     })
   }
 
@@ -123,6 +132,22 @@ export default function EventoForm() {
             <option value="">Selecciona un venue</option>
             {venues.map((v) => (
               <option key={v.id} value={v.id}>{v.name} — {v.city}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="field">
+          <label className="field-label" htmlFor="categoryId">Categoría</label>
+          <select
+            id="categoryId"
+            className="select"
+            value={form.categoryId}
+            onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+            required
+          >
+            <option value="">Selecciona una categoría</option>
+            {categorias.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
         </div>

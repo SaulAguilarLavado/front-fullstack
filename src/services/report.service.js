@@ -10,8 +10,13 @@ const reportService = {
   getVentasPorMes: () =>
     http.get('/reports/sales-by-month').then((r) => r.data.data),
 
+  // Agrupado por tipo de ticket (VIP/General).
   getEntradasPorCategoriaPorMes: () =>
     http.get('/reports/tickets-by-category-by-month').then((r) => r.data.data),
+
+  // Agrupado por la CATEGORÍA del evento (Concierto, Teatro, etc.).
+  getEntradasPorCategoriaEventoPorMes: () =>
+    http.get('/reports/tickets-by-event-category-by-month').then((r) => r.data.data),
 }
 
 export default reportService

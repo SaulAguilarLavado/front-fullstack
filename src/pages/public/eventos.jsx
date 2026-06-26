@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import eventosService from '@/services/eventos.service.js'
+import categoryService from '@/services/category.service.js'
 import useEventoStore from '@/store/evento.store.js'
 import { RUTAS, toRuta } from '@/constants/rutas.js'
 import { formatFecha, formatHora } from '@/utils/format-date.js'
@@ -12,12 +13,18 @@ import '../public/home.css'
 export default function Eventos() {
   const { filtros, pagina, size, setFiltro, resetFiltros, setPagina } = useEventoStore()
 
+  const { data: categorias = [] } = useQuery({
+    queryKey: ['categorias'],
+    queryFn: categoryService.getAll,
+  })
+
   const params = {
     page: pagina,
     size,
     sort: 'dateTime,asc',
     ...(filtros.busqueda && { title: filtros.busqueda }),
     ...(filtros.ciudad && { city: filtros.ciudad }),
+    ...(filtros.categoria && { categoryId: filtros.categoria }),
     ...(filtros.precioMax && { maxPrice: filtros.precioMax }),
   }
 
@@ -59,6 +66,19 @@ export default function Eventos() {
             value={filtros.ciudad}
             onChange={(e) => setFiltro('ciudad', e.target.value)}
           />
+        </div>
+        <div className="field" style={{ maxWidth: 180 }}>
+          <label className="field-label">Categoría</label>
+          <select
+            className="select"
+            value={filtros.categoria}
+            onChange={(e) => setFiltro('categoria', e.target.value)}
+          >
+            <option value="">Todas</option>
+            {categorias.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
         </div>
         <div className="field" style={{ maxWidth: 160 }}>
           <label className="field-label">Precio máx. (S/)</label>
