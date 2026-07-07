@@ -35,7 +35,7 @@ export default function OrgCategorias() {
         ? ticketTypeService.editar(editandoId, data)
         : ticketTypeService.crear(data),
     onSuccess: () => {
-      toast.success(editandoId ? 'Categoría actualizada' : 'Categoría creada')
+      toast.success(editandoId ? 'Tipo de entrada actualizado' : 'Tipo de entrada creado')
       qc.invalidateQueries(['ticket-types', eventId])
       resetForm()
     },
@@ -45,7 +45,7 @@ export default function OrgCategorias() {
   const deleteMut = useMutation({
     mutationFn: (id) => ticketTypeService.eliminar(id),
     onSuccess: () => {
-      toast.success('Categoría eliminada')
+      toast.success('Tipo de entrada eliminado')
       qc.invalidateQueries(['ticket-types', eventId])
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo eliminar (¿tiene ventas?)'),
@@ -95,7 +95,7 @@ export default function OrgCategorias() {
           {/* Form crear/editar */}
           <form onSubmit={handleSubmit} className="card" style={{ padding: 20, alignSelf: 'start' }}>
             <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 16 }}>
-              {editandoId ? 'Editar categoría' : 'Nueva categoría'}
+              {editandoId ? 'Editar tipo de entrada' : 'Nuevo tipo de entrada'}
             </h3>
             <div className="field">
               <label className="field-label">Nombre</label>
@@ -149,7 +149,7 @@ export default function OrgCategorias() {
             ) : categorias.length === 0 ? (
               <div className="empty-state">
                 <span style={{ fontSize: 32 }}>🏷</span>
-                <h3>Sin categorías aún</h3>
+                <h3>Sin tipos de entrada aún</h3>
                 <p>Crea la primera con el formulario de la izquierda.</p>
               </div>
             ) : (

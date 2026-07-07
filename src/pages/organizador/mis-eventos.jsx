@@ -72,7 +72,7 @@ export default function OrgMisEventos() {
                   </td>
                   <td className="table-actions">
                     <Link to={toRuta(RUTAS.ORG_EVENTO_EDITAR, { id: e.id })} className="btn btn-ghost btn-sm">Editar</Link>
-                    <Link to={`${RUTAS.ORG_CATEGORIAS}?eventId=${e.id}`} className="btn btn-ghost btn-sm">Categorías</Link>
+                    <Link to={`${RUTAS.ORG_CATEGORIAS}?eventId=${e.id}`} className="btn btn-ghost btn-sm">Tipos de entrada</Link>
                     <button
                       className="btn btn-danger btn-sm"
                       onClick={() => {

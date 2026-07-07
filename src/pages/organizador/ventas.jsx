@@ -64,7 +64,7 @@ export default function OrgVentas() {
                 <th>Orden</th>
                 <th>Cliente</th>
                 <th>Evento</th>
-                <th>Categorías</th>
+                <th>Tipos de entrada</th>
                 <th>Entradas</th>
                 <th>Total</th>
                 <th>Fecha</th>
