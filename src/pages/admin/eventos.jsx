@@ -24,7 +24,11 @@ export default function AdminEventos() {
     mutationFn: (id) => eventosService.eliminarEvento(id),
     onSuccess: () => {
       toast.success('Evento eliminado')
-      qc.invalidateQueries(['admin-eventos'])
+      qc.invalidateQueries({ queryKey: ['admin-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-mis-eventos'] })
+      qc.invalidateQueries({ queryKey: ['eventos'] })
+      qc.invalidateQueries({ queryKey: ['eventos-home'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos-resumen'] })
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo eliminar'),
   })

@@ -36,7 +36,12 @@ export default function OrgCategorias() {
         : ticketTypeService.crear(data),
     onSuccess: () => {
       toast.success(editandoId ? 'Tipo de entrada actualizado' : 'Tipo de entrada creado')
-      qc.invalidateQueries(['ticket-types', eventId])
+      qc.invalidateQueries({ queryKey: ['ticket-types', eventId] })
+      qc.invalidateQueries({ queryKey: ['eventos'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-mis-eventos'] })
+      qc.invalidateQueries({ queryKey: ['admin-ventas'] })
+      qc.invalidateQueries({ queryKey: ['org-ventas'] })
       resetForm()
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo guardar'),
@@ -46,7 +51,10 @@ export default function OrgCategorias() {
     mutationFn: (id) => ticketTypeService.eliminar(id),
     onSuccess: () => {
       toast.success('Tipo de entrada eliminado')
-      qc.invalidateQueries(['ticket-types', eventId])
+      qc.invalidateQueries({ queryKey: ['ticket-types', eventId] })
+      qc.invalidateQueries({ queryKey: ['eventos'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-mis-eventos'] })
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo eliminar (¿tiene ventas?)'),
   })

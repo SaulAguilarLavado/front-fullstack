@@ -1,10 +1,10 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import eventosService from '@/services/eventos.service.js'
 import categoryService from '@/services/category.service.js'
 import useEventoStore from '@/store/evento.store.js'
 import { RUTAS, toRuta } from '@/constants/rutas.js'
+import { CIUDADES_LIMA } from '@/constants/ciudades.js'
 import { formatFecha, formatHora } from '@/utils/format-date.js'
 import { formatPrecio } from '@/utils/format-price.js'
 import './eventos.css'
@@ -60,12 +60,16 @@ export default function Eventos() {
         </div>
         <div className="field">
           <label className="field-label">Ciudad</label>
-          <input
-            className="input"
-            placeholder="Lima, Arequipa..."
+          <select
+            className="select"
             value={filtros.ciudad}
             onChange={(e) => setFiltro('ciudad', e.target.value)}
-          />
+          >
+            <option value="">Todas</option>
+            {CIUDADES_LIMA.map((ciudad) => (
+              <option key={ciudad} value={ciudad}>{ciudad}</option>
+            ))}
+          </select>
         </div>
         <div className="field" style={{ maxWidth: 180 }}>
           <label className="field-label">Categoría</label>

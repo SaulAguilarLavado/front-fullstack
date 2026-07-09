@@ -15,7 +15,7 @@ export default function MisEntradas() {
     mutationFn: (ticketId) => orderService.cancelarTicket(ticketId),
     onSuccess: () => {
       toast.success('Entrada anulada')
-      qc.invalidateQueries(['historial'])
+      qc.invalidateQueries({ queryKey: ['historial'] })
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo anular'),
   })

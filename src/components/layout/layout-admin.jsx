@@ -50,7 +50,6 @@ export default function LayoutAdmin() {
               <NavLink to={RUTAS.ADMIN_CATEGORIAS} className="sidebar-link">🏷 Categorías</NavLink>
               <NavLink to={RUTAS.ADMIN_USUARIOS} className="sidebar-link">👥 Usuarios</NavLink>
               <NavLink to={RUTAS.ADMIN_ORGANIZADORES} className="sidebar-link">🏢 Organizadores</NavLink>
-              <NavLink to={RUTAS.ADMIN_ROLES} className="sidebar-link">🔑 Roles</NavLink>
               <span className="sidebar-section">Ventas</span>
               <NavLink to={RUTAS.ADMIN_VENTAS} className="sidebar-link">💳 Ventas</NavLink>
               <NavLink to={RUTAS.ADMIN_REPORTES} className="sidebar-link">📈 Reportes</NavLink>

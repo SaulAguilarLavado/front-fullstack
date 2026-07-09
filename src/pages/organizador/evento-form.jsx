@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import eventosService from '@/services/eventos.service.js'
 import venueService from '@/services/venue.service.js'
@@ -12,6 +12,7 @@ export default function EventoForm() {
   const { id } = useParams()
   const esEdicion = !!id
   const navigate = useNavigate()
+  const qc = useQueryClient()
   const { user } = useAuthStore()
 
   const [form, setForm] = useState({
@@ -57,6 +58,13 @@ export default function EventoForm() {
       esEdicion ? eventosService.editarEvento(id, data) : eventosService.crearEvento(data),
     onSuccess: () => {
       toast.success(esEdicion ? 'Evento actualizado' : 'Evento creado')
+      qc.invalidateQueries({ queryKey: ['eventos'] })
+      qc.invalidateQueries({ queryKey: ['eventos-home'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-mis-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-eventos'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos-resumen'] })
+      if (id) qc.invalidateQueries({ queryKey: ['evento', id] })
       navigate(user?.roleName === 'ADMIN' ? RUTAS.ADMIN_EVENTOS : RUTAS.ORG_MIS_EVENTOS)
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo guardar el evento'),

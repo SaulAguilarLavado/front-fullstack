@@ -27,6 +27,7 @@ export default function useMetricsUpdates() {
           queryClient.invalidateQueries({ queryKey: ['reporte-entradas-categoria'] })
           queryClient.invalidateQueries({ queryKey: ['reporte-entradas-evento-categoria'] })
           queryClient.invalidateQueries({ queryKey: ['admin-ventas'] })
+          queryClient.invalidateQueries({ queryKey: ['org-ventas'] })
           queryClient.invalidateQueries({ queryKey: ['admin-eventos-resumen'] })
           queryClient.invalidateQueries({ queryKey: ['admin-usuarios-resumen'] })
         })

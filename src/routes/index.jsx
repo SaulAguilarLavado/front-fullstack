@@ -41,7 +41,6 @@ import AdminUsuarios from '@/pages/admin/usuarios.jsx'
 import AdminUsuarioDetalle from '@/pages/admin/usuario-detalle.jsx'
 import AdminVenues from '@/pages/admin/venues.jsx'
 import AdminCategorias from '@/pages/admin/categorias-admin.jsx'
-import AdminRoles from '@/pages/admin/roles.jsx'
 import AdminVentas from '@/pages/admin/ventas.jsx'
 import AdminReportes from '@/pages/admin/reportes.jsx'
 import AdminOrganizadores from '@/pages/admin/organizadores.jsx'
@@ -97,7 +96,6 @@ export default function AppRoutes() {
           <Route path="/admin/usuarios/:id" element={<AdminUsuarioDetalle />} />
           <Route path="/admin/venues" element={<AdminVenues />} />
           <Route path="/admin/categorias" element={<AdminCategorias />} />
-          <Route path="/admin/roles" element={<AdminRoles />} />
           <Route path="/admin/ventas" element={<AdminVentas />} />
           <Route path="/admin/reportes" element={<AdminReportes />} />
           <Route path="/admin/organizadores" element={<AdminOrganizadores />} />
