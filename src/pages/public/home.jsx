@@ -1,49 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import EventoCard from '@/components/eventos/evento-card.jsx'
 import eventosService from '@/services/eventos.service.js'
-import { RUTAS, toRuta } from '@/constants/rutas.js'
-import { formatFecha, formatHora } from '@/utils/format-date.js'
-import { formatPrecio } from '@/utils/format-price.js'
+import { RUTAS } from '@/constants/rutas.js'
 import './home.css'
-
-function EventoCard({ evento }) {
-  return (
-    <Link
-      to={toRuta(RUTAS.EVENTO_DETALLE, { id: evento.id })}
-      className="card card-hoverable evento-card"
-    >
-      {evento.imageUrl ? (
-        <img
-          src={evento.imageUrl}
-          alt={evento.title}
-          className="evento-card-img"
-          loading="lazy"
-        />
-      ) : (
-        <div className="evento-card-img-placeholder">🎭</div>
-      )}
-      <div className="evento-card-body">
-        <span className="evento-card-fecha">
-          {formatFecha(evento.dateTime)} · {formatHora(evento.dateTime)}
-        </span>
-        <h3 className="evento-card-title">{evento.title}</h3>
-        <span className="evento-card-venue">
-          {evento.venue?.name}{evento.venue?.city ? `, ${evento.venue.city}` : ''}
-        </span>
-        {evento.minPrice != null && (
-          <span className="evento-card-price">
-            Desde {formatPrecio(evento.minPrice)}
-          </span>
-        )}
-      </div>
-    </Link>
-  )
-}
 
 export default function Home() {
   const { data, isLoading } = useQuery({
     queryKey: ['eventos-home'],
-    queryFn: () => eventosService.getEventos({ size: 8, sort: 'dateTime,asc' }),
+    queryFn: () => eventosService.getEventos({ size: 8, sort: 'dateTime,asc', upcomingOnly: true }),
   })
 
   const eventos = data?.content ?? []

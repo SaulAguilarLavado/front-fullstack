@@ -18,10 +18,14 @@ export default function useStockUpdates(ticketTypeIds = []) {
   useEffect(() => {
     const client = new Client({
       webSocketFactory: () => new SockJS(WS_URL),
-      reconnectDelay: 4000,
+      reconnectDelay: 2000,        // reconexión rápida si se cae
+      heartbeatIncoming: 10000,    // alineado con el broker del backend
+      heartbeatOutgoing: 10000,
       onConnect: () => {
+        console.info('[WS] conectado a', WS_URL)
         client.subscribe('/topic/stock-updates', (message) => {
           const payload = JSON.parse(message.body)
+          console.debug('[WS] stock-update', payload)
           // Solo actualiza si el ticketType que cambió es uno de los
           // que esta pantalla está mostrando — evita renders innecesarios
           // cuando alguien compra entradas de OTRO evento.
@@ -33,6 +37,8 @@ export default function useStockUpdates(ticketTypeIds = []) {
           }
         })
       },
+      onStompError: (frame) => console.error('[WS] STOMP error', frame.headers['message']),
+      onWebSocketClose: (e) => console.warn('[WS] cerrado', e?.reason),
     })
 
     client.activate()

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import venueService from '@/services/venue.service.js'
+import { CIUDADES_LIMA } from '@/constants/ciudades.js'
 
 const FORM_VACIO = { name: '', address: '', city: '', capacity: '' }
 
@@ -22,7 +23,11 @@ export default function AdminVenues() {
     mutationFn: (data) => editandoId ? venueService.editar(editandoId, data) : venueService.crear(data),
     onSuccess: () => {
       toast.success(editandoId ? 'Venue actualizado' : 'Venue creado')
-      qc.invalidateQueries(['admin-venues'])
+      qc.invalidateQueries({ queryKey: ['admin-venues'] })
+      qc.invalidateQueries({ queryKey: ['venues-select'] })
+      qc.invalidateQueries({ queryKey: ['eventos'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-mis-eventos'] })
       resetForm()
     },
     onError: (e) => toast.error(e.message),
@@ -32,7 +37,11 @@ export default function AdminVenues() {
     mutationFn: (id) => venueService.eliminar(id),
     onSuccess: () => {
       toast.success('Venue eliminado')
-      qc.invalidateQueries(['admin-venues'])
+      qc.invalidateQueries({ queryKey: ['admin-venues'] })
+      qc.invalidateQueries({ queryKey: ['venues-select'] })
+      qc.invalidateQueries({ queryKey: ['eventos'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-mis-eventos'] })
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo eliminar (¿tiene eventos?)'),
   })
@@ -77,7 +86,12 @@ export default function AdminVenues() {
           </div>
           <div className="field">
             <label className="field-label">Ciudad</label>
-            <input className="input" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} required />
+            <select className="select" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} required>
+              <option value="">Selecciona una ciudad</option>
+              {CIUDADES_LIMA.map((ciudad) => (
+                <option key={ciudad} value={ciudad}>{ciudad}</option>
+              ))}
+            </select>
           </div>
           <div className="field">
             <label className="field-label">Aforo</label>

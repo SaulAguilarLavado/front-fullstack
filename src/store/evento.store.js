@@ -3,7 +3,7 @@ import { create } from 'zustand'
 const useEventoStore = create((set) => ({
   filtros: {
     busqueda: '',
-    tipo: '',
+    categoria: '',
     ciudad: '',
     fechaDesde: '',
     precioMax: '',
@@ -16,7 +16,7 @@ const useEventoStore = create((set) => ({
 
   resetFiltros: () =>
     set({
-      filtros: { busqueda: '', tipo: '', ciudad: '', fechaDesde: '', precioMax: '' },
+      filtros: { busqueda: '', categoria: '', ciudad: '', fechaDesde: '', precioMax: '' },
       pagina: 0,
     }),
 

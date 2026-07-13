@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import AppRoutes from '@/routes/index.jsx'
 import useAuthStore from '@/store/auth.store.js'
 import usuariosService from '@/services/usuarios.service.js'
@@ -8,34 +9,28 @@ export default function App() {
   const token = useAuthStore((s) => s.token)
   const setAuth = useAuthStore((s) => s.setAuth)
   const logout = useAuthStore((s) => s.logout)
-  const [isValidating, setIsValidating] = useState(false)
+
+  const profileQuery = useQuery({
+    queryKey: ['auth-profile', token],
+    queryFn: usuariosService.getMyProfile,
+    enabled: Boolean(token),
+    retry: false,
+    staleTime: 0,
+  })
 
   useEffect(() => {
-    if (!token) {
-      setIsValidating(false)
-      return
+    if (token && profileQuery.data) {
+      setAuth(profileQuery.data, token)
     }
+  }, [token, profileQuery.data, setAuth])
 
-    let active = true
-    setIsValidating(true)
-
-    usuariosService.getMyProfile()
-      .then((userResponse) => {
-        if (active) setAuth(userResponse, token)
-      })
-      .catch((err) => {
-        if (active && err?.response?.status === 401) logout()
-      })
-      .finally(() => {
-        if (active) setIsValidating(false)
-      })
-
-    return () => {
-      active = false
+  useEffect(() => {
+    if (token && profileQuery.error?.response?.status === 401) {
+      logout()
     }
-  }, [token, setAuth, logout])
+  }, [token, profileQuery.error, logout])
 
-  if (isValidating) return null
+  if (token && profileQuery.isFetching) return null
 
   return <AppRoutes />
 }

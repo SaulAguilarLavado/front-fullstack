@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import orderService from '@/services/order.service.js'
 import QrCodeTools from '@/components/entradas/qr-code-tools.jsx'
+import { flattenOrderTickets } from '@/utils/order-tickets.js'
 
 export default function MisEntradas() {
   const qc = useQueryClient()
@@ -15,16 +16,13 @@ export default function MisEntradas() {
     mutationFn: (ticketId) => orderService.cancelarTicket(ticketId),
     onSuccess: () => {
       toast.success('Entrada anulada')
-      qc.invalidateQueries(['historial'])
+      qc.invalidateQueries({ queryKey: ['historial'] })
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo anular'),
   })
 
-  // Extraer todos los tickets de todas las órdenes. Cada ticket trae
-  // status (VALID | CANCELLED) y ticketTypeName directo desde el backend.
-  const tickets = historial.flatMap((orden) =>
-    (orden.generatedTickets ?? []).map((t) => ({ ...t, orden }))
-  )
+  // Cada ticket trae status (VALID | CANCELLED) y ticketTypeName directo desde el backend.
+  const tickets = flattenOrderTickets(historial)
 
   if (isLoading) {
     return (

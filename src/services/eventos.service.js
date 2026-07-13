@@ -6,7 +6,8 @@ import http from './http.js'
 // EventResponse viene anidado con venue completo, organizerName y minPrice
 // ya calculado en el backend.
 const eventosService = {
-  // params soportados: title, city, minPrice, maxPrice, page, size, sort
+  // params soportados: title, city, categoryId, minPrice, maxPrice,
+  // upcomingOnly, page, size, sort
   getEventos: (params = {}) =>
     http.get('/events', { params }).then((r) => r.data.data),
 
