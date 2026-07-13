@@ -247,3 +247,53 @@
     position: static;
   }
 }
+
+@media (max-width: 600px) {
+  .detalle-page {
+    padding: 28px 0 56px;
+  }
+
+  .detalle-back {
+    margin-bottom: 20px;
+  }
+
+  .detalle-img,
+  .detalle-img-placeholder {
+    aspect-ratio: 16 / 10;
+    margin-bottom: 24px;
+    border-radius: var(--radius-lg);
+  }
+
+  .detalle-titulo {
+    font-size: 28px;
+  }
+
+  .detalle-desc {
+    font-size: 15px;
+  }
+
+  .ticket-panel-header,
+  .ticket-panel-body,
+  .ticket-panel-footer {
+    padding: 18px;
+  }
+
+  .categoria-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .categoria-precio {
+    white-space: normal;
+  }
+
+  .qty-control {
+    justify-content: space-between;
+  }
+
+  .ticket-panel-total {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}

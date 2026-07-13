@@ -24,7 +24,7 @@ export default function LayoutAdmin() {
     <div className="layout-public" style={{ minHeight: '100vh' }}>
       <nav className="navbar">
         <div className="navbar-inner">
-          <Link to={RUTAS.HOME} className="navbar-brand">TicketFlow</Link>
+          <Link to={dashboardRuta} className="navbar-brand">TicketFlow</Link>
           <div className="navbar-actions">
             <div className="navbar-avatar">{iniciales}</div>
             <Link to={dashboardRuta} style={{ fontSize: 14, color: 'var(--color-text)' }}>

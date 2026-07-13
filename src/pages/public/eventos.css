@@ -30,7 +30,7 @@
 
 .eventos-grid-wrap {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
   margin-bottom: 40px;
 }
@@ -73,4 +73,45 @@
   color: var(--color-text-muted);
   padding: 0 12px;
   font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .eventos-page {
+    padding: 32px 0 56px;
+  }
+
+  .eventos-toolbar {
+    padding: 20px;
+    gap: 14px;
+    align-items: stretch;
+  }
+
+  .eventos-toolbar .field {
+    flex: 1 1 calc(50% - 14px);
+    min-width: 220px;
+  }
+
+  .eventos-grid-wrap {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  .eventos-toolbar {
+    padding: 16px;
+  }
+
+  .eventos-toolbar .field {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  .eventos-grid-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 }
