@@ -26,11 +26,17 @@ export default function LayoutPublic() {
     ? RUTAS.ORG_DASHBOARD
     : RUTAS.PERFIL
 
+  const brandRuta = isAdmin
+    ? RUTAS.ADMIN_DASHBOARD
+    : isOrganizador
+    ? RUTAS.ORG_DASHBOARD
+    : RUTAS.HOME
+
   return (
     <div className="layout-public">
       <nav className="navbar">
         <div className="navbar-inner">
-          <Link to={RUTAS.HOME} className="navbar-brand">TicketFlow</Link>
+          <Link to={brandRuta} className="navbar-brand">TicketFlow</Link>
 
           <div className="navbar-nav">
             <NavLink to={RUTAS.HOME} className="navbar-link" end>Inicio</NavLink>
