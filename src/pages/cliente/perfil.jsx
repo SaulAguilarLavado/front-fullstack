@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { useMutation } from '@tanstack/react-query'
 import usuariosService from '@/services/usuarios.service.js'
@@ -6,17 +6,15 @@ import useAuthStore from '@/store/auth.store.js'
 
 export default function Perfil() {
   const { user, updateUser } = useAuthStore()
-  const [form, setForm] = useState({ fullName: '' })
+  const [fullNameDraft, setFullNameDraft] = useState(null)
   const [pwForm, setPwForm] = useState({ newPassword: '', confirmar: '' })
-
-  useEffect(() => {
-    if (user) setForm({ fullName: user.fullName ?? '' })
-  }, [user])
+  const fullName = fullNameDraft ?? user?.fullName ?? ''
 
   const updateMut = useMutation({
     mutationFn: (data) => usuariosService.updateMyProfile(data),
     onSuccess: (updated) => {
       updateUser(updated)
+      setFullNameDraft(null)
       toast.success('Perfil actualizado')
     },
     onError: (e) => toast.error(e.message),
@@ -33,7 +31,7 @@ export default function Perfil() {
 
   const handlePerfil = (e) => {
     e.preventDefault()
-    updateMut.mutate(form)
+    updateMut.mutate({ fullName })
   }
 
   const handlePassword = (e) => {
@@ -69,8 +67,8 @@ export default function Perfil() {
               <input
                 id="fullName"
                 className="input"
-                value={form.fullName}
-                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                value={fullName}
+                onChange={(e) => setFullNameDraft(e.target.value)}
                 placeholder="Tu nombre completo"
               />
             </div>

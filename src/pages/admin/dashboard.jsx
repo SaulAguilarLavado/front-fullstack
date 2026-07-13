@@ -2,17 +2,23 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import eventosService from '@/services/eventos.service.js'
 import usuariosService from '@/services/usuarios.service.js'
+import useMetricsUpdates from '@/hooks/use-metrics-updates.js'
+import { LIVE_QUERY_OPTS } from '@/constants/query-options.js'
 import { RUTAS } from '@/constants/rutas.js'
 
 export default function AdminDashboard() {
+  useMetricsUpdates()
+
   const { data: eventosData } = useQuery({
     queryKey: ['admin-eventos-resumen'],
     queryFn: () => eventosService.getEventos({ size: 1 }),
+    ...LIVE_QUERY_OPTS,
   })
 
   const { data: usuariosData } = useQuery({
     queryKey: ['admin-usuarios-resumen'],
     queryFn: () => usuariosService.getUsuarios({ size: 1 }),
+    ...LIVE_QUERY_OPTS,
   })
 
   return (
@@ -30,7 +36,7 @@ export default function AdminDashboard() {
           <div className="stat-card-value">{eventosData?.totalElements ?? '—'}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-card-label">Usuarios activos</div>
+          <div className="stat-card-label">Usuarios registrados</div>
           <div className="stat-card-value">{usuariosData?.totalElements ?? '—'}</div>
         </div>
       </div>

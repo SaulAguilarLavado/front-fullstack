@@ -24,7 +24,7 @@ export default function LayoutAdmin() {
     <div className="layout-public" style={{ minHeight: '100vh' }}>
       <nav className="navbar">
         <div className="navbar-inner">
-          <Link to={RUTAS.HOME} className="navbar-brand">TicketFlow</Link>
+          <Link to={dashboardRuta} className="navbar-brand">TicketFlow</Link>
           <div className="navbar-actions">
             <div className="navbar-avatar">{iniciales}</div>
             <Link to={dashboardRuta} style={{ fontSize: 14, color: 'var(--color-text)' }}>
@@ -47,9 +47,9 @@ export default function LayoutAdmin() {
               <span className="sidebar-section">Gestión</span>
               <NavLink to={RUTAS.ADMIN_EVENTOS} className="sidebar-link">🎪 Eventos</NavLink>
               <NavLink to={RUTAS.ADMIN_VENUES} className="sidebar-link">📍 Venues</NavLink>
+              <NavLink to={RUTAS.ADMIN_CATEGORIAS} className="sidebar-link">🏷 Categorías</NavLink>
               <NavLink to={RUTAS.ADMIN_USUARIOS} className="sidebar-link">👥 Usuarios</NavLink>
               <NavLink to={RUTAS.ADMIN_ORGANIZADORES} className="sidebar-link">🏢 Organizadores</NavLink>
-              <NavLink to={RUTAS.ADMIN_ROLES} className="sidebar-link">🔑 Roles</NavLink>
               <span className="sidebar-section">Ventas</span>
               <NavLink to={RUTAS.ADMIN_VENTAS} className="sidebar-link">💳 Ventas</NavLink>
               <NavLink to={RUTAS.ADMIN_REPORTES} className="sidebar-link">📈 Reportes</NavLink>
@@ -60,7 +60,7 @@ export default function LayoutAdmin() {
               <NavLink to={RUTAS.ORG_DASHBOARD} className="sidebar-link">📊 Dashboard</NavLink>
               <span className="sidebar-section">Mis eventos</span>
               <NavLink to={RUTAS.ORG_MIS_EVENTOS} className="sidebar-link">🎪 Mis eventos</NavLink>
-              <NavLink to={RUTAS.ORG_CATEGORIAS} className="sidebar-link">🏷 Categorías</NavLink>
+              <NavLink to={RUTAS.ORG_CATEGORIAS} className="sidebar-link">🎟 Tipos de entrada</NavLink>
               <NavLink to={RUTAS.ORG_VENTAS} className="sidebar-link">💳 Mis ventas</NavLink>
             </>
           )}

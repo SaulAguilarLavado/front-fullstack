@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -9,7 +8,7 @@ import { ESTADOS_EVENTO } from '@/constants/categorias.js'
 
 export default function OrgMisEventos() {
   const qc = useQueryClient()
-  const [pagina, setPagina] = useState(0)
+  const pagina = 0
 
   const { data, isLoading } = useQuery({
     queryKey: ['org-mis-eventos', pagina],
@@ -20,7 +19,11 @@ export default function OrgMisEventos() {
     mutationFn: (id) => eventosService.eliminarEvento(id),
     onSuccess: () => {
       toast.success('Evento eliminado')
-      qc.invalidateQueries(['org-mis-eventos'])
+      qc.invalidateQueries({ queryKey: ['org-mis-eventos'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos'] })
+      qc.invalidateQueries({ queryKey: ['eventos'] })
+      qc.invalidateQueries({ queryKey: ['eventos-home'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos-resumen'] })
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo eliminar'),
   })
@@ -72,7 +75,7 @@ export default function OrgMisEventos() {
                   </td>
                   <td className="table-actions">
                     <Link to={toRuta(RUTAS.ORG_EVENTO_EDITAR, { id: e.id })} className="btn btn-ghost btn-sm">Editar</Link>
-                    <Link to={`${RUTAS.ORG_CATEGORIAS}?eventId=${e.id}`} className="btn btn-ghost btn-sm">Categorías</Link>
+                    <Link to={`${RUTAS.ORG_CATEGORIAS}?eventId=${e.id}`} className="btn btn-ghost btn-sm">Tipos de entrada</Link>
                     <button
                       className="btn btn-danger btn-sm"
                       onClick={() => {

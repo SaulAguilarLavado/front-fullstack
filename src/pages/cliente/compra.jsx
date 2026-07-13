@@ -28,6 +28,7 @@ export default function Compra() {
     },
     onSuccess: (orden) => {
       queryClient.invalidateQueries({ queryKey: ['historial'] })
+      queryClient.invalidateQueries({ queryKey: ['ticket-types'] })   // refresca el stock visto por el comprador
       navigate(RUTAS.COMPRA_CONFIRMACION, { state: { orden }, replace: true })
       queueMicrotask(limpiarCarrito)
     },

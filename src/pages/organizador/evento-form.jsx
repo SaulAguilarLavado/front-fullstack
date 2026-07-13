@@ -1,29 +1,38 @@
-import { useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import eventosService from '@/services/eventos.service.js'
 import venueService from '@/services/venue.service.js'
+import categoryService from '@/services/category.service.js'
 import useAuthStore from '@/store/auth.store.js'
 import { RUTAS } from '@/constants/rutas.js'
+
+const EMPTY_EVENT_FORM = {
+  title: '',
+  description: '',
+  dateTime: '',
+  imageUrl: '',
+  venueId: '',
+  categoryId: '',
+}
 
 export default function EventoForm() {
   const { id } = useParams()
   const esEdicion = !!id
   const navigate = useNavigate()
+  const qc = useQueryClient()
   const { user } = useAuthStore()
-
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    dateTime: '',
-    imageUrl: '',
-    venueId: '',
-  })
+  const [formDraft, setFormDraft] = useState({})
 
   const { data: venues = [] } = useQuery({
     queryKey: ['venues-select'],
     queryFn: () => venueService.getVenues({ size: 100 }).then((r) => r.content ?? r),
+  })
+
+  const { data: categorias = [] } = useQuery({
+    queryKey: ['categorias'],
+    queryFn: categoryService.getAll,
   })
 
   const { data: eventoActual } = useQuery({
@@ -32,23 +41,34 @@ export default function EventoForm() {
     enabled: esEdicion,
   })
 
-  useEffect(() => {
-    if (eventoActual) {
-      setForm({
-        title: eventoActual.title ?? '',
-        description: eventoActual.description ?? '',
-        dateTime: eventoActual.dateTime?.slice(0, 16) ?? '',
-        imageUrl: eventoActual.imageUrl ?? '',
-        venueId: eventoActual.venue?.id ?? '',
-      })
+  const initialForm = useMemo(() => {
+    if (!eventoActual) return EMPTY_EVENT_FORM
+
+    return {
+      title: eventoActual.title ?? '',
+      description: eventoActual.description ?? '',
+      dateTime: eventoActual.dateTime?.slice(0, 16) ?? '',
+      imageUrl: eventoActual.imageUrl ?? '',
+      venueId: eventoActual.venue?.id ?? '',
+      categoryId: eventoActual.categoryId ?? '',
     }
   }, [eventoActual])
+
+  const form = { ...initialForm, ...formDraft }
+  const updateForm = (field, value) => setFormDraft((current) => ({ ...current, [field]: value }))
 
   const saveMut = useMutation({
     mutationFn: (data) =>
       esEdicion ? eventosService.editarEvento(id, data) : eventosService.crearEvento(data),
     onSuccess: () => {
       toast.success(esEdicion ? 'Evento actualizado' : 'Evento creado')
+      qc.invalidateQueries({ queryKey: ['eventos'] })
+      qc.invalidateQueries({ queryKey: ['eventos-home'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-mis-eventos'] })
+      qc.invalidateQueries({ queryKey: ['org-eventos'] })
+      qc.invalidateQueries({ queryKey: ['admin-eventos-resumen'] })
+      if (id) qc.invalidateQueries({ queryKey: ['evento', id] })
       navigate(user?.roleName === 'ADMIN' ? RUTAS.ADMIN_EVENTOS : RUTAS.ORG_MIS_EVENTOS)
     },
     onError: (e) => toast.error(e.message ?? 'No se pudo guardar el evento'),
@@ -62,6 +82,7 @@ export default function EventoForm() {
       dateTime: form.dateTime, // datetime-local ya viene en formato ISO sin zona
       imageUrl: form.imageUrl || null,
       venueId: Number(form.venueId),
+      categoryId: Number(form.categoryId),
     })
   }
 
@@ -81,7 +102,7 @@ export default function EventoForm() {
             id="title"
             className="input"
             value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            onChange={(e) => updateForm('title', e.target.value)}
             required
             maxLength={150}
           />
@@ -93,7 +114,7 @@ export default function EventoForm() {
             id="description"
             className="textarea"
             value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            onChange={(e) => updateForm('description', e.target.value)}
             rows={4}
             required
           />
@@ -106,7 +127,7 @@ export default function EventoForm() {
             type="datetime-local"
             className="input"
             value={form.dateTime}
-            onChange={(e) => setForm({ ...form, dateTime: e.target.value })}
+            onChange={(e) => updateForm('dateTime', e.target.value)}
             required
           />
         </div>
@@ -117,7 +138,7 @@ export default function EventoForm() {
             id="venueId"
             className="select"
             value={form.venueId}
-            onChange={(e) => setForm({ ...form, venueId: e.target.value })}
+            onChange={(e) => updateForm('venueId', e.target.value)}
             required
           >
             <option value="">Selecciona un venue</option>
@@ -128,12 +149,28 @@ export default function EventoForm() {
         </div>
 
         <div className="field">
+          <label className="field-label" htmlFor="categoryId">Categoría</label>
+          <select
+            id="categoryId"
+            className="select"
+            value={form.categoryId}
+            onChange={(e) => updateForm('categoryId', e.target.value)}
+            required
+          >
+            <option value="">Selecciona una categoría</option>
+            {categorias.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="field">
           <label className="field-label" htmlFor="imageUrl">URL de imagen (opcional)</label>
           <input
             id="imageUrl"
             className="input"
             value={form.imageUrl}
-            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+            onChange={(e) => updateForm('imageUrl', e.target.value)}
             placeholder="https://..."
           />
         </div>

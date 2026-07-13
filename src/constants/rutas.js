@@ -31,7 +31,7 @@ export const RUTAS = {
   ADMIN_USUARIOS: '/admin/usuarios',
   ADMIN_USUARIO_DETALLE: '/admin/usuarios/:id',
   ADMIN_VENUES: '/admin/venues',
-  ADMIN_ROLES: '/admin/roles',
+  ADMIN_CATEGORIAS: '/admin/categorias',
   ADMIN_VENTAS: '/admin/ventas',
   ADMIN_REPORTES: '/admin/reportes',
   ADMIN_ORGANIZADORES: '/admin/organizadores',

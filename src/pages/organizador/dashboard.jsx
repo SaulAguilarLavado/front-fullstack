@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import eventosService from '@/services/eventos.service.js'
 import useAuthStore from '@/store/auth.store.js'
 import { RUTAS } from '@/constants/rutas.js'
-import { formatPrecio } from '@/utils/format-price.js'
 import { formatFecha } from '@/utils/format-date.js'
 
 export default function OrgDashboard() {

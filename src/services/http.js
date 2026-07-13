@@ -40,7 +40,7 @@ http.interceptors.response.use(
     let msg = error.message
     try {
       msg = error.response?.data?.message || msg
-    } catch (e) {
+    } catch {
       if (status === 401) msg = 'Acceso denegado'
       else if (status === 403) msg = 'No tienes permisos para esta acción.'
       else if (status === 404) msg = 'Recurso no encontrado.'
