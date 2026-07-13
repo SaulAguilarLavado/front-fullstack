@@ -38,11 +38,6 @@ export const ESTADOS_PAGO = {
   CANCELLED: 'Cancelado',
 }
 
-export const ESTADOS_USUARIO = {
-  ACTIVE: 'Activo',
-  INACTIVE: 'Inactivo',
-}
-
 // OrderRequest.paymentMethod es un String libre en el backend (no enum) —
 // estos valores son una convención del front, hay que mantenerlos
 // consistentes con lo que se muestre en los reportes de admin.

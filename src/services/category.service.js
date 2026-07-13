@@ -7,9 +7,6 @@ const categoryService = {
   getAll: () =>
     http.get('/categories').then((r) => r.data.data),
 
-  getById: (id) =>
-    http.get(`/categories/${id}`).then((r) => r.data.data),
-
   crear: (data) =>
     http.post('/categories', data).then((r) => r.data.data),
 

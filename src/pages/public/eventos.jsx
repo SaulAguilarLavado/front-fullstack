@@ -1,27 +1,23 @@
-import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import EventoCard from '@/components/eventos/evento-card.jsx'
 import eventosService from '@/services/eventos.service.js'
-import categoryService from '@/services/category.service.js'
 import useEventoStore from '@/store/evento.store.js'
-import { RUTAS, toRuta } from '@/constants/rutas.js'
-import { CIUDADES_LIMA } from '@/constants/ciudades.js'
-import { formatFecha, formatHora } from '@/utils/format-date.js'
-import { formatPrecio } from '@/utils/format-price.js'
 import './eventos.css'
 import '../public/home.css'
 
 export default function Eventos() {
   const { filtros, pagina, size, setFiltro, resetFiltros, setPagina } = useEventoStore()
 
-  const { data: categorias = [] } = useQuery({
-    queryKey: ['categorias'],
-    queryFn: categoryService.getAll,
+  const { data: opcionesData } = useQuery({
+    queryKey: ['eventos-filter-options'],
+    queryFn: () => eventosService.getEventos({ page: 0, size: 1000, sort: 'dateTime,asc', upcomingOnly: true }),
   })
 
   const params = {
     page: pagina,
     size,
     sort: 'dateTime,asc',
+    upcomingOnly: true,
     ...(filtros.busqueda && { title: filtros.busqueda }),
     ...(filtros.ciudad && { city: filtros.ciudad }),
     ...(filtros.categoria && { categoryId: filtros.categoria }),
@@ -37,6 +33,15 @@ export default function Eventos() {
   const eventos = data?.content ?? []
   const totalPaginas = data?.totalPages ?? 0
   const totalElementos = data?.totalElements ?? 0
+  const eventosOpciones = opcionesData?.content ?? []
+  const ciudadesDisponibles = [...new Set(
+    eventosOpciones.map((e) => e.venue?.city).filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, 'es'))
+  const categorias = [...new Map(
+    eventosOpciones
+      .filter((e) => e.categoryId && e.categoryName)
+      .map((e) => [String(e.categoryId), { id: e.categoryId, name: e.categoryName }])
+  ).values()].sort((a, b) => a.name.localeCompare(b.name, 'es'))
 
   return (
     <div className="container eventos-page">
@@ -66,7 +71,7 @@ export default function Eventos() {
             onChange={(e) => setFiltro('ciudad', e.target.value)}
           >
             <option value="">Todas</option>
-            {CIUDADES_LIMA.map((ciudad) => (
+            {ciudadesDisponibles.map((ciudad) => (
               <option key={ciudad} value={ciudad}>{ciudad}</option>
             ))}
           </select>
@@ -124,29 +129,7 @@ export default function Eventos() {
       ) : (
         <div className="eventos-grid-wrap">
           {eventos.map((e) => (
-            <Link
-              key={e.id}
-              to={toRuta(RUTAS.EVENTO_DETALLE, { id: e.id })}
-              className="card card-hoverable evento-card"
-            >
-              {e.imageUrl ? (
-                <img src={e.imageUrl} alt={e.title} className="evento-card-img" loading="lazy" />
-              ) : (
-                <div className="evento-card-img-placeholder">🎭</div>
-              )}
-              <div className="evento-card-body">
-                <span className="evento-card-fecha">
-                  {formatFecha(e.dateTime)} · {formatHora(e.dateTime)}
-                </span>
-                <h3 className="evento-card-title">{e.title}</h3>
-                <span className="evento-card-venue">
-                  {e.venue?.name}{e.venue?.city ? `, ${e.venue.city}` : ''}
-                </span>
-                {e.minPrice != null && (
-                  <span className="evento-card-price">Desde {formatPrecio(e.minPrice)}</span>
-                )}
-              </div>
-            </Link>
+            <EventoCard key={e.id} evento={e} />
           ))}
         </div>
       )}

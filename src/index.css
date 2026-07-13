@@ -202,21 +202,9 @@ p { line-height: 1.7; }
   border-color: #b91c1c;
 }
 
-.btn-success {
-  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
-  border-color: #059669;
-  color: #ffffff;
-}
-
-.btn-success:hover:not(:disabled) {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  border-color: #047857;
-}
-
 .btn-block { width: 100%; }
 .btn-sm { padding: 6px 14px; font-size: 13px; }
 .btn-lg { padding: 14px 28px; font-size: 15px; }
-.btn-xl { padding: 16px 32px; font-size: 16px; }
 
 /* ============================================================
    FORMULARIOS — mejorados con mejor diseño
@@ -326,114 +314,9 @@ p { line-height: 1.7; }
   cursor: pointer;
 }
 
-.card-header {
-  padding: 20px;
-  background: linear-gradient(135deg, var(--color-accent-lighter) 0%, var(--color-bg-secondary) 100%);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.card-body {
-  padding: 20px;
-}
-
-.card-footer {
-  padding: 16px 20px;
-  background: var(--color-bg-secondary);
-  border-top: 1px solid var(--color-border);
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-}
-
 /* ============================================================
-   BADGES Y TAGS — estado
+   BADGES — estado
    ============================================================ */
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.badge-success {
-  background: var(--color-success-light);
-  color: #047857;
-}
-
-.badge-danger {
-  background: var(--color-danger-light);
-  color: #7f1d1d;
-}
-
-.badge-warning {
-  background: var(--color-warning-light);
-  color: #92400e;
-}
-
-.badge-info {
-  background: var(--color-accent-light);
-  color: var(--color-accent-dark);
-}
-
-.badge-muted {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-muted);
-}
-
-.tag {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: var(--radius);
-  font-size: 13px;
-  font-weight: 500;
-  background: var(--color-accent-light);
-  color: var(--color-accent-dark);
-  border: 1px solid var(--color-accent);
-}
-
-/* ============================================================
-   ALERTS Y MENSAJES
-   ============================================================ */
-
-.alert {
-  padding: 16px 20px;
-  border-radius: var(--radius-lg);
-  border: 1px solid;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.alert-success {
-  background: var(--color-success-light);
-  border-color: var(--color-success);
-  color: #065f46;
-}
-
-.alert-danger {
-  background: var(--color-danger-light);
-  border-color: var(--color-danger);
-  color: #7f1d1d;
-}
-
-.alert-warning {
-  background: var(--color-warning-light);
-  border-color: var(--color-warning);
-  color: #92400e;
-}
-
-.alert-info {
-  background: var(--color-accent-light);
-  border-color: var(--color-accent);
-  color: #1e40af;
-}
 
 .badge {
   display: inline-flex;
@@ -443,13 +326,14 @@ p { line-height: 1.7; }
   border-radius: var(--radius-pill);
   font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.04em;
   line-height: 1.5;
+  text-transform: uppercase;
 }
 
 .badge-success { background: var(--color-success-light); color: var(--color-success); }
 .badge-danger  { background: var(--color-danger-light); color: var(--color-danger); }
 .badge-neutral { background: var(--color-bg-secondary); color: var(--color-text-muted); }
-.badge-price   { background: var(--color-price-light); color: var(--color-price); }
 
 /* ============================================================
    TIPOGRAFÍA UTILITARIA
@@ -464,7 +348,6 @@ p { line-height: 1.7; }
 }
 
 .text-muted { color: var(--color-text-muted); }
-.text-faint { color: var(--color-text-faint); }
 
 .price {
   font-variant-numeric: tabular-nums;

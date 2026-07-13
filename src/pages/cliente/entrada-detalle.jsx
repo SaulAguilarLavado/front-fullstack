@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { RUTAS } from '@/constants/rutas.js'
 import orderService from '@/services/order.service.js'
 import QrCodeTools from '@/components/entradas/qr-code-tools.jsx'
+import { flattenOrderTickets } from '@/utils/order-tickets.js'
 
 export default function EntradaDetalle() {
   const { id } = useParams()
@@ -10,9 +11,7 @@ export default function EntradaDetalle() {
     queryKey: ['historial'],
     queryFn: orderService.getHistorial,
   })
-  const ticket = ordenes
-    .flatMap((orden) => (orden.generatedTickets ?? []).map((t) => ({ ...t, orden })))
-    .find((t) => t.id === id)
+  const ticket = flattenOrderTickets(ordenes).find((t) => t.id === id)
 
   if (isLoading) {
     return (

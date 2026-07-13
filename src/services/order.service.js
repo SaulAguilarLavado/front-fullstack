@@ -26,9 +26,6 @@ const orderService = {
   getHistorial: () =>
     http.get('/orders/history').then((r) => r.data.data),
 
-  getOrdenById: (id) =>
-    http.get(`/orders/${id}`).then((r) => r.data.data),
-
   // Regla de negocio: solo cancela si faltan 72h+ para el evento, y solo
   // si el ticket está en estado VALID. El backend lanza
   // BusinessRuleException si no se cumple cualquiera de las dos.

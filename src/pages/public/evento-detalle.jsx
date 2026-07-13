@@ -17,9 +17,10 @@ export default function EventoDetalle() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { token } = useAuthStore()
-  const { agregarItem, items, limpiarCarrito } = useCarritoStore()
+  const { agregarItem, limpiarCarrito } = useCarritoStore()
 
   const [cantidades, setCantidades] = useState({})
+  const [currentTime] = useState(() => Date.now())
 
   const { data: evento, isLoading: loadingEvento } = useQuery({
     queryKey: ['evento', id],
@@ -98,6 +99,8 @@ export default function EventoDetalle() {
   }
 
   const cancelado = evento.status === 'CANCELLED'
+  const finalizado = new Date(evento.dateTime).getTime() <= currentTime
+  const noDisponible = cancelado || finalizado || evento.status !== 'ACTIVE'
 
   return (
     <div className="container detalle-page">
@@ -122,6 +125,9 @@ export default function EventoDetalle() {
             )}
             {evento.categoryName && (
               <span className="badge badge-neutral">{evento.categoryName}</span>
+            )}
+            {finalizado && !cancelado && (
+              <span className="badge badge-neutral">Finalizado</span>
             )}
           </div>
 
@@ -170,7 +176,7 @@ export default function EventoDetalle() {
               ) : (
                 categorias.map((cat) => {
                   const disp = disponible(cat)
-                  const agotado = disp <= 0 || cancelado
+                  const agotado = disp <= 0 || noDisponible
                   const qty = cantidades[cat.id] ?? 0
                   return (
                     <div key={cat.id} className={`categoria-row ${agotado ? 'agotado' : ''}`}>
@@ -213,10 +219,10 @@ export default function EventoDetalle() {
               </div>
               <button
                 className="btn btn-primary btn-block btn-lg"
-                disabled={!haySeleccion || cancelado}
+                disabled={!haySeleccion || noDisponible}
                 onClick={handleComprar}
               >
-                {cancelado ? 'Evento cancelado' : 'Comprar entradas'}
+                {cancelado ? 'Evento cancelado' : finalizado ? 'Evento finalizado' : 'Comprar entradas'}
               </button>
               {!token && (
                 <p style={{ fontSize: 12, color: 'var(--color-text-faint)', marginTop: 10, textAlign: 'center' }}>

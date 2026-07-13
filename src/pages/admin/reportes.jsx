@@ -5,12 +5,9 @@ import {
 } from 'recharts'
 import reportService from '@/services/report.service.js'
 import useMetricsUpdates from '@/hooks/use-metrics-updates.js'
+import { LIVE_QUERY_OPTS } from '@/constants/query-options.js'
 
 const COLORES = ['#0f6e56', '#854f0b', '#5f5e5a', '#a32d2d', '#1d9e75']
-
-// Las métricas deben caer en vivo: polling de respaldo + invalidación por
-// WebSocket (useMetricsUpdates) cuando ocurre una venta en otra sesión.
-const LIVE_OPTS = { staleTime: 0, refetchInterval: 15000, refetchOnWindowFocus: true }
 
 // Convierte [{month, category, ticketsSold}] a formato ancho para recharts.
 function aFormatoAncho(filas) {
@@ -29,19 +26,19 @@ export default function AdminReportes() {
   const { data: clientesPorMes = [], isLoading: loadingClientes } = useQuery({
     queryKey: ['reporte-clientes-mes'],
     queryFn: reportService.getClientesPorMes,
-    ...LIVE_OPTS,
+    ...LIVE_QUERY_OPTS,
   })
 
   const { data: entradasPorCategoria = [], isLoading: loadingEntradas } = useQuery({
     queryKey: ['reporte-entradas-categoria'],
     queryFn: reportService.getEntradasPorCategoriaPorMes,
-    ...LIVE_OPTS,
+    ...LIVE_QUERY_OPTS,
   })
 
   const { data: entradasPorEvento = [], isLoading: loadingEvento } = useQuery({
     queryKey: ['reporte-entradas-evento-categoria'],
     queryFn: reportService.getEntradasPorCategoriaEventoPorMes,
-    ...LIVE_OPTS,
+    ...LIVE_QUERY_OPTS,
   })
 
   const { cats: categorias, data: dataEntradas } = aFormatoAncho(entradasPorCategoria)

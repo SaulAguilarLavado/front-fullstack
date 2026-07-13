@@ -8,9 +8,6 @@ const venueService = {
   getVenues: (params = {}) =>
     http.get('/venues', { params }).then((r) => r.data.data),
 
-  getVenueById: (id) =>
-    http.get(`/venues/${id}`).then((r) => r.data.data),
-
   crear: (data) =>
     http.post('/venues', data).then((r) => r.data.data),
 
